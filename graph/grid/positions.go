@@ -2,10 +2,31 @@ package grid
 
 type positions map[int]map[int]struct{} // x->y->exists
 
-func newPositions() positions {
-	return make(positions)
+func positionsFrom(p Position, maxDistance int) positions {
+	acc := make(positions)
+
+	for i := p.x - maxDistance; i < p.x+maxDistance+1; i++ {
+		for j := p.y - maxDistance; j < p.y+maxDistance+1; j++ {
+			if p.distance(at(i, j)) <= maxDistance {
+				acc.add(at(i, j))
+			}
+		}
+	}
+
+	return acc
 }
 
+func (ps positions) distancesFrom(from Position) []int {
+	distances := make([]int, 0, 0)
+
+	for _, to := range ps.slice() {
+		if !from.equal(to) {
+			distances = append(distances, from.distance(to))
+		}
+	}
+
+	return distances
+}
 func (ps positions) add(p Position) {
 	_, ok := ps[p.x]
 	if !ok {
@@ -48,31 +69,4 @@ func (ps positions) slice() []Position {
 		}
 	}
 	return slice
-}
-
-func (ps positions) withFromTo(p Position, maxDistance int) positions {
-	acc := make(positions)
-
-	for i := p.x - maxDistance; i < p.x+maxDistance+1; i++ {
-		for j := p.y - maxDistance; j < p.y+maxDistance+1; j++ {
-			if p.distance(at(i, j)) <= maxDistance {
-				acc.add(at(i, j))
-			}
-		}
-	}
-
-	ps.merge(acc)
-	return ps
-}
-
-func (ps positions) distancesFrom(from Position) []int {
-	distances := make([]int, 0, 0)
-
-	for _, to := range ps.slice() {
-		if !from.equal(to) {
-			distances = append(distances, from.distance(to))
-		}
-	}
-
-	return distances
 }

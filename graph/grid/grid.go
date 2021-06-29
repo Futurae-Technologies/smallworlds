@@ -59,11 +59,11 @@ func (w *Graph) WithAllNodes() *Graph {
 // _Manhattan_ distance is less than maxDistance.
 func (w *Graph) WithShortEdges(maxDistance int) *Graph {
 	for _, from := range w.nodes.slice() {
-		adjecantPositions := newPositions().withFromTo(from, maxDistance)
+		adjecantPositions := positionsFrom(from, maxDistance)
 
 		for _, to := range adjecantPositions.slice() {
-			if !from.equal(to) {
-				w.addEdgeIfValid(from, to)
+			if !from.equal(to) && w.valid(from) && w.valid(to) {
+				w.edges.add(from, to)
 			}
 		}
 	}
@@ -75,7 +75,7 @@ func (w *Graph) WithShortEdges(maxDistance int) *Graph {
 func (w *Graph) WithDropout(p float64) *Graph {
 	for _, e := range w.edges.slice() {
 		if w.rand.Float64() < p {
-			w.removeEdge(e)
+			w.edges.remove(e[0], e[1])
 		}
 	}
 
@@ -93,16 +93,20 @@ func (w *Graph) WithDistantEdges(q int, r int) *Graph {
 }
 
 func (w *Graph) addDistantEdgesFrom(from Position, q int, r int) {
+	if !w.valid(from) {
+		return
+	}
+
 	normConst := w.normalizingConstFor(from, r)
 	added := 0
 
 	for added < q {
 		for _, to := range w.nodes.slice() {
-			if (!from.equal(to)) && (added < q) && (!w.contains(from, to)) {
+			if (!from.equal(to)) && (added < q) && (!w.edges.contains(from, to)) {
 				p := math.Pow(float64(from.distance(to)), float64(-1*r)) / normConst
 
 				if w.rand.Float64() < p {
-					w.addDirectEdgeIfValid(from, to)
+					w.edges.addDirection(from, to)
 					added++
 				}
 			}
@@ -144,26 +148,6 @@ func (w *Graph) addNode(p Position) {
 	}
 }
 
-func (w *Graph) addEdgeIfValid(from Position, to Position) {
-	if w.exists(from) && w.exists(to) {
-		w.edges.add(from, to)
-	}
-}
-
-func (w *Graph) addDirectEdgeIfValid(from Position, to Position) {
-	if w.exists(from) && w.exists(to) {
-		w.edges.addDirection(from, to)
-	}
-}
-
-func (w *Graph) removeEdge(edge []Position) {
-	w.edges.remove(edge[0], edge[1])
-}
-
-func (w *Graph) exists(p Position) bool {
-	return w.nodes.has(p)
-}
-
-func (w *Graph) contains(from, to Position) bool {
-	return w.edges.contains(from, to)
+func (w *Graph) valid(p Position) bool {
+	return p.within(w.LenX, w.LenY)
 }

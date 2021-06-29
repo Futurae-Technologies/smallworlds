@@ -11,7 +11,7 @@ func Test_equal(t *testing.T) {
 }
 
 func Test_oneStepAdjecant(t *testing.T) {
-	ps := newPositions().withFromTo(at(2, 2), 1)
+	ps := positionsFrom(at(2, 2), 1)
 
 	assert.Len(t, ps.slice(), 5)
 	assert.ElementsMatch(t, ps.slice(), []Position{
@@ -24,7 +24,7 @@ func Test_oneStepAdjecant(t *testing.T) {
 }
 
 func Test_adjecant(t *testing.T) {
-	ps := newPositions().withFromTo(at(2, 2), 2)
+	ps := positionsFrom(at(2, 2), 2)
 
 	expected := []Position{
 		at(1, 1),
@@ -46,7 +46,7 @@ func Test_adjecant(t *testing.T) {
 }
 
 func Test_remove(t *testing.T) {
-	ps := newPositions().withFromTo(at(2, 2), 2)
+	ps := positionsFrom(at(2, 2), 2)
 
 	assert.True(t, ps.has(at(1, 1)))
 	ps.remove(at(1, 1))
