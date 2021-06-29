@@ -18,11 +18,11 @@ func benchmarkRing(i int, b *testing.B) {
 			WithVisitDistribution([][]float64{{0.3, 0.7}, {0.6, 0.4}}).
 			WithState(g.Nodes()[0])
 
-		a.VisitOrExplore()
-		a.VisitOrExplore()
-		a.VisitOrExplore()
-		a.VisitOrExplore()
-		a.VisitOrExplore()
+		a.VisitAddressOrExplore()
+		a.VisitAddressOrExplore()
+		a.VisitAddressOrExplore()
+		a.VisitAddressOrExplore()
+		a.VisitAddressOrExplore()
 	}
 }
 
@@ -45,11 +45,11 @@ func benchmarkGrid(i int, b *testing.B) {
 			WithVisitDistribution([][]float64{{0.3, 0.7}, {0.6, 0.4}}).
 			WithState(nodes[0])
 
-		a.VisitOrExplore()
-		a.VisitOrExplore()
-		a.VisitOrExplore()
-		a.VisitOrExplore()
-		a.VisitOrExplore()
+		a.VisitAddressOrExplore()
+		a.VisitAddressOrExplore()
+		a.VisitAddressOrExplore()
+		a.VisitAddressOrExplore()
+		a.VisitAddressOrExplore()
 	}
 }
 

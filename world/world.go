@@ -85,14 +85,14 @@ func (m *World) hasEdge(from, to int) bool {
 }
 
 // OverwriteContext sets the context c for the given node.
-func (w *World) OverwriteContext(n graph.Node, c Context) *World {
+func (w *World) AddContext(n graph.Node, c Context) *World {
 	w.contexts[n.String()] = c
 	return w
 }
 
 // AddIfNotExistsContextFeature adds the feaure (key, value) to the node's context
 // if that key is not present.
-func (w *World) AddIfNotExistsContextFeature(n graph.Node, key string, value float64) *World {
+func (w *World) AddIfKeyNotExists(n graph.Node, key string, value float64) *World {
 	w.contexts[n.String()].LeftJoin(Context{key: value})
 
 	return w

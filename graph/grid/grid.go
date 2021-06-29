@@ -86,27 +86,28 @@ func (w *Graph) WithDropout(p float64) *Graph {
 // are chosen given the likelihood defined as distance(from, to)^(-1*r).
 func (w *Graph) WithDistantEdges(q int, r int) *Graph {
 	for _, from := range w.nodes.slice() {
-		normConst := w.normalizingConstFor(from, r)
-		added := 0
-
-		for {
-			for _, to := range w.nodes.slice() {
-				if (!from.equal(to)) && (added < q) && (!w.contains(from, to)) {
-					p := math.Pow(float64(from.distance(to)), float64(-1*r)) / normConst
-
-					if w.rand.Float64() < p {
-						w.addDirectEdgeIfValid(from, to)
-						added++
-					}
-				}
-			}
-			if added >= q {
-				break
-			}
-		}
+		w.addDistantEdgesFrom(from, q, r)
 	}
 
 	return w
+}
+
+func (w *Graph) addDistantEdgesFrom(from Position, q int, r int) {
+	normConst := w.normalizingConstFor(from, r)
+	added := 0
+
+	for added < q {
+		for _, to := range w.nodes.slice() {
+			if (!from.equal(to)) && (added < q) && (!w.contains(from, to)) {
+				p := math.Pow(float64(from.distance(to)), float64(-1*r)) / normConst
+
+				if w.rand.Float64() < p {
+					w.addDirectEdgeIfValid(from, to)
+					added++
+				}
+			}
+		}
+	}
 }
 
 // Nodes exports the grid as a slice of Nodes.
@@ -126,6 +127,7 @@ func (w *Graph) Edges() []graph.Edge {
 	}
 	return es
 }
+
 func (w *Graph) normalizingConstFor(node Position, r int) float64 {
 	c := 0.0
 

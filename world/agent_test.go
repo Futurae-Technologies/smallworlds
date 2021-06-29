@@ -128,19 +128,19 @@ func Test_Explore(t *testing.T) {
 	assert.True(t, len(a.History[0]) < 3)
 }
 
-func Test_VisitOrExplore_1(t *testing.T) {
+func Test_VisitAddressOrExplore_1(t *testing.T) {
 	g := ring.NewGraph(2, 0.0).WithSeed(42).WithNodes(5).WithShortEdges()
 	m := NewWorld(g)
 	a := NewAgent(m).WithState(g.Nodes()[0])
 
 	a.WithK(2).WithMaxExploreLen(2).WithExploreProb(1.0)
-	a.VisitOrExplore()
+	a.VisitAddressOrExplore()
 
 	assert.Len(t, a.History, 1)
 	assert.True(t, len(a.History[0]) < 3)
 }
 
-func Test_VisitOrExplore_k4(t *testing.T) {
+func Test_VisitAddressOrExplore_k4(t *testing.T) {
 	g := ring.NewGraph(3, 0.0).WithSeed(42).WithNodes(10).WithShortEdges()
 	m := NewWorld(g)
 	a := NewAgent(m).
@@ -150,14 +150,14 @@ func Test_VisitOrExplore_k4(t *testing.T) {
 		WithVisitProb(g.Nodes()[0], g.Nodes()[5], 1.0)
 
 	a.WithK(4).WithMaxExploreLen(2).WithExploreProb(0.0)
-	a.VisitOrExplore()
+	a.VisitAddressOrExplore()
 
 	assert.Len(t, a.History, 1)
 	assert.Len(t, a.History[0], 3)
 	assert.Equal(t, g.Nodes()[5], a.State)
 }
 
-func Test_VisitOrExplore_k1(t *testing.T) {
+func Test_VisitAddressOrExplore_k1(t *testing.T) {
 	g := ring.NewGraph(5, 0.0).WithSeed(42).WithNodes(10).WithShortEdges()
 	m := NewWorld(g)
 	a := NewAgent(m).
@@ -167,14 +167,14 @@ func Test_VisitOrExplore_k1(t *testing.T) {
 		WithVisitProb(g.Nodes()[0], g.Nodes()[5], 1.0)
 
 	a.WithK(1).WithMaxExploreLen(2).WithExploreProb(0.0)
-	a.VisitOrExplore()
+	a.VisitAddressOrExplore()
 
 	assert.Len(t, a.History, 1)
 	assert.True(t, len(a.History[0]) < 3)
 	assert.Equal(t, g.Nodes()[5], a.State)
 }
 
-func Test_VisitOrExplore_fromRandom(t *testing.T) {
+func Test_VisitAddressOrExplore_fromRandom(t *testing.T) {
 	g := ring.NewGraph(5, 0.0).WithSeed(42).WithNodes(10).WithShortEdges()
 	m := NewWorld(g)
 	a := NewAgent(m).
@@ -184,7 +184,7 @@ func Test_VisitOrExplore_fromRandom(t *testing.T) {
 		WithVisitProb(g.Nodes()[0], g.Nodes()[5], 1.0)
 
 	a.WithK(1).WithMaxExploreLen(2).WithExploreProb(1.0)
-	a.VisitOrExplore()
+	a.VisitAddressOrExplore()
 
 	assert.Len(t, a.History, 1)
 }

@@ -148,17 +148,19 @@ func (a *Agent) Explore() {
 // or Explore the world. If the agent decides to visit
 // an address and the agent is not one of his addresses, then
 // the agent will walk to one of this addresses picked at random.
-func (a *Agent) VisitOrExplore() {
+func (a *Agent) VisitAddressOrExplore() {
 	if a.rand.Float64() < a.exploreProb {
 		a.Explore()
 		return
 	}
 
+	// If Agent is not at one of his addresses, then it visits one of them at random.
 	if !graph.Contains(a.Addresses, a.State) {
 		a.Visit(a.Addresses[a.rand.Intn(len(a.Addresses))])
 		return
 	}
 
+	// If Agent is at one of his addresses, then use the transition matrix to visit another address.
 	keys, probs := a.transitionsFrom(a.State)
 	a.Visit(keys[stats.PickFromDiscreteDist(probs)]) // walk there given some short path.
 }
