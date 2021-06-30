@@ -18,8 +18,8 @@ import (
 //
 // All walks are recorded in the agent's history as well as the last node that he visited.
 type Agent struct {
-	Addresses  []graph.Node
-	visitProbs map[graph.Node]map[graph.Node]float64
+	Addresses   []graph.Node
+	Transitions map[graph.Node]map[graph.Node]float64
 
 	world   *World
 	State   graph.Node
@@ -37,11 +37,11 @@ type Agent struct {
 // its addresses, transitions, as well as the start state.
 func NewAgent(w *World) *Agent {
 	return &Agent{
-		world:      w,
-		Addresses:  make([]graph.Node, 0),
-		visitProbs: make(map[graph.Node]map[graph.Node]float64),
-		History:    make([]Walk, 0, 0),
-		rand:       rand.New(rand.NewSource(time.Now().UTC().UnixNano())),
+		world:       w,
+		Addresses:   make([]graph.Node, 0),
+		Transitions: make(map[graph.Node]map[graph.Node]float64),
+		History:     make([]Walk, 0, 0),
+		rand:        rand.New(rand.NewSource(time.Now().UTC().UnixNano())),
 
 		maxExploreLen: 4,
 		exploreProb:   0.3,
@@ -79,7 +79,7 @@ func (a *Agent) WithExploreProb(f float64) *Agent {
 func (a *Agent) WithAddresses(as []graph.Node) *Agent {
 	for _, i := range as {
 		a.Addresses = append(a.Addresses, i)
-		a.visitProbs[i] = make(map[graph.Node]float64)
+		a.Transitions[i] = make(map[graph.Node]float64)
 	}
 	return a
 }
@@ -87,14 +87,14 @@ func (a *Agent) WithAddresses(as []graph.Node) *Agent {
 // WithAddress adds the given address to the agent.
 func (a *Agent) WithAddress(ad graph.Node) *Agent {
 	a.Addresses = append(a.Addresses, ad)
-	a.visitProbs[ad] = make(map[graph.Node]float64)
+	a.Transitions[ad] = make(map[graph.Node]float64)
 	return a
 }
 
 // WithVisitProb assigns the probability that an agent will traverse
 // to the given address when at the from address.
 func (a *Agent) WithVisitProb(from, to graph.Node, p float64) *Agent {
-	a.visitProbs[from][to] = p
+	a.Transitions[from][to] = p
 	return a
 }
 
@@ -169,7 +169,7 @@ func (a *Agent) transitionsFrom(n graph.Node) ([]graph.Node, []float64) {
 	probs := make([]float64, 0, 0)
 	keys := make([]graph.Node, 0, 0)
 
-	for key, value := range a.visitProbs[a.State] { // pick the distribution from the state
+	for key, value := range a.Transitions[a.State] { // pick the distribution from the state
 		probs = append(probs, value)
 		keys = append(keys, key)
 	}

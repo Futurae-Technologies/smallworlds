@@ -16,7 +16,7 @@ func Test_NewAgent(t *testing.T) {
 
 	assert.Equal(t, m, a.world)
 	assert.EqualValues(t, []graph.Node{}, a.Addresses)
-	assert.EqualValues(t, map[graph.Node]map[graph.Node]float64{}, a.visitProbs)
+	assert.EqualValues(t, map[graph.Node]map[graph.Node]float64{}, a.Transitions)
 	assert.EqualValues(t, []Walk{}, a.History)
 }
 
@@ -57,7 +57,7 @@ func Test_WithVisitProb(t *testing.T) {
 		WithAddress(g.Nodes()[0]).
 		WithVisitProb(g.Nodes()[0], g.Nodes()[1], 0.5)
 
-	assert.EqualValues(t, 0.5, a.visitProbs[g.Nodes()[0]][g.Nodes()[1]])
+	assert.EqualValues(t, 0.5, a.Transitions[g.Nodes()[0]][g.Nodes()[1]])
 }
 
 func Test_WithVisitDistribution(t *testing.T) {
@@ -68,8 +68,8 @@ func Test_WithVisitDistribution(t *testing.T) {
 		WithAddress(g.Nodes()[1]).
 		WithVisitDistribution([][]float64{{0.3, 0.7}, {0.6, 0.4}})
 
-	assert.EqualValues(t, 0.7, a.visitProbs[g.Nodes()[0]][g.Nodes()[1]])
-	assert.EqualValues(t, 0.4, a.visitProbs[g.Nodes()[1]][g.Nodes()[1]])
+	assert.EqualValues(t, 0.7, a.Transitions[g.Nodes()[0]][g.Nodes()[1]])
+	assert.EqualValues(t, 0.4, a.Transitions[g.Nodes()[1]][g.Nodes()[1]])
 }
 
 func Test_WithState_Ring(t *testing.T) {
