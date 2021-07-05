@@ -1,29 +1,19 @@
 # smallworlds
 
-_smallworlds_ is a set of Golang modules to support building agent-based simulations.
+_smallworlds_ is a set of Go modules for building graph-based agent simulations. We provide APIs
+for generating small-world graphs, attaching contexts to nodes, and defining agents that traverse 
+these worlds. 
 
-The goal is to let the programmers focus on the semantics of simulations (e.g. deciding the
-types of agents their behaviours etc) rather than focusing on constructing the worlds on top of which to
-run the simulations.
+Programmers thus focus on the semantics of simulations (e.g. agent transitions,
+context definitions, interactions, etc). For example, we may specify that agents have home and work addresses in the world. 
+That they prefer to move between these nodes with certain transitions, but that they also occasionally wonder off and explore
+other nodes.
 
-Common use of these packages is as follows. A programmer constructs a particular small-world or random
-graph, builds a world on top of this graph by adding context to the graph's nodes, and then defines a set
-of agents that will walk this world.
+In short, we see this project as providing building blocks for running graph-based simulations.
 
-The simulation consists of specifying the actual contexts as well as how agents behave in the world.
-For example, we may specify that agents have home and work addresses in the world. That they prefer
-to move between these nodes with certain transitions, but that they also occasionally wonder off and explore
-other nodes. Assigning transition probabilities is what the programmer needs to do to run simulations.
+## Running a simulation
 
-Finally, we decided to separate the graph construction from the world construction as we see these two concepts
-loosly-coupled. In particular, worlds can be constructed on top of any graph, while some projects may
-prefer to only construct small-world graphs and have their own world implementations.
-
-## Examples
-
-Please see **examples.go** that illustrate the summary above.
-
-Running simulations is outside the scope of _smallworlds_. A commmon pattern would be as below:
+We illustrate below how to construct a simple world with two agents, and run a simulation.
 ```
 // create a small world
 w := world.NewWorld(grid.NewGraph(100, 100).
@@ -40,7 +30,7 @@ for _, n := range w.Nodes() {
 	})
 }
 
-// create a random agent
+// create a random agent. This agent always wanders around.
 randomAgent := world.NewAgent(w).
 		WithState(w.Nodes()[0]).
 		WithExploreProb(1.0) // Always explores randomly
@@ -63,15 +53,24 @@ for i:=0; i<100; i++ {
     human.VisitAddressOrExplore()
 }
 
+// the output of every simulation are agents' histories (traces)
+// which are then analyzed
 analyze(randomAgent.History)
 analyze(human.History)
 
 ```
 
+Please see **examples.go** for further code samples.
+
+Note that we decided to separate the graph construction from the world construction, as we see these two concepts
+loosly-coupled. That is, a particular (contextual) world can be constructed over any graph (not just random and small-world)
+thus some projects may prefer to inject their graph constructs. Similarly, some projects may prefer to construct their own
+worlds on top of the small-world or random graphs.
+
 ## Packages
 
 #### graph
-Core graph interfaces that constructed graph satisfy.
+Core graph interfaces for injecting generated graphs into worlds.
 
 #### graph/random
 Constructs random graphs.
@@ -83,7 +82,8 @@ Constructs small-world graphs based on the grid algorithm.
 Constructs small-world graphs based on the ring algorithm.
 
 #### world
-Constructs worlds out of graphs, and specifies agents' behaviours.
+Constructs worlds by attaching contexts to graphs, and constructs
+probabilistic agent walks over the constructed worlds.
 
 #### stats
 Utility functions for creating transition matrices.
