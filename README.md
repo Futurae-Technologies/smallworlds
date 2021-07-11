@@ -9,11 +9,11 @@ context definitions, interactions, etc). For example, we may specify that agents
 That they prefer to move between these nodes with certain transitions, but that they also occasionally wonder off and explore
 other nodes.
 
-In short, we see this project as providing building blocks for running graph-based simulations.
+In short, we see this library as a building block for running graph-based simulations.
 
 ## Running a simulation
 
-We illustrate below how to construct a simple world with two agents, and run a simulation.
+Below we construct a simple world with two agents, and run a simulation.
 ```
 // create a small world
 w := world.NewWorld(grid.NewGraph(100, 100).
