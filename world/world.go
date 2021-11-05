@@ -91,11 +91,11 @@ func (w *World) AddContext(n graph.Node, c Context) *World {
 }
 
 // AddContextWithSpread sets the context c for the given node and its nearest neighbours.
-func (w *World) AddContextWithSpread(origin graph.Node, c Context, ok bool) {
+func (w *World) AddContextWithSpread(origin graph.Node, c Context, spread int) {
 	w.AddContext(origin, c)
-	if ok {
+	if spread>0 {
 		for _, n := range w.Neighbourhood(origin) {
-			w.AddContextWithSpread(n, c, false)
+			w.AddContextWithSpread(n, c, spread-1)
 		}
 	}
 }
