@@ -84,10 +84,20 @@ func (m *World) hasEdge(from, to int) bool {
 	return m.array[from][to] == 1
 }
 
-// OverwriteContext sets the context c for the given node.
+// AddContext sets the context c for the given node.
 func (w *World) AddContext(n graph.Node, c Context) *World {
 	w.contexts[n.String()] = c
 	return w
+}
+
+// AddContextWithSpread sets the context c for the given node and its nearest neighbours.
+func (w *World) AddContextWithSpread(origin graph.Node, c Context, spread int) {
+	w.AddContext(origin, c)
+	if spread>0 {
+		for _, n := range w.Neighbourhood(origin) {
+			w.AddContextWithSpread(n, c, spread-1)
+		}
+	}
 }
 
 // AddIfNotExistsContextFeature adds the feaure (key, value) to the node's context
